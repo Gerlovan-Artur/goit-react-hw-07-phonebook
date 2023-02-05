@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
-import { getContacts } from 'redux/selectors';
-import { nanoid } from 'nanoid';
+import { addContact } from 'redux/operations';
+import { selectContacts } from 'redux/selectors';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import style from '../Form/Form.module.css';
 
 export function ContactForm() {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
-  const contactsId = nanoid();
+  const contacts = useSelector(selectContacts);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -36,25 +34,26 @@ export function ContactForm() {
     const name = e.target.elements.name.value;
     const number = e.target.elements.number.value;
 
-    const isExist = contacts.find(contact => {
+    const contactExists = contacts.find(contact => {
       return contact.name === name;
     });
-    if (isExist) {
+    if (contactExists) {
+      setName('');
+      setNumber('');
       return toast.warn(`${name} is already in contacts.`);
     }
 
-    dispatch(addContact(name, number));
+    dispatch(addContact({ name, number }));
     setName('');
     setNumber('');
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor={contactsId}>
+      <label>
         <p>Name</p>{' '}
         <input
           value={name}
-          id={contactsId}
           onChange={handleChange}
           type="text"
           name="name"
@@ -63,11 +62,10 @@ export function ContactForm() {
           required
         />
       </label>
-      <label htmlFor={contactsId}>
+      <label>
         <p>Number</p>{' '}
         <input
           value={number}
-          id={contactsId}
           onChange={handleChange}
           type="tel"
           name="number"

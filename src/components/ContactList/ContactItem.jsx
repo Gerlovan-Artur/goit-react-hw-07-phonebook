@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/contactsSlice';
+import { deleteContact } from 'redux/operations';
+import { MdClose } from 'react-icons/md';
 import style from '../ContactList/ContactList.module.css';
 
 export const ContactItem = ({ contact: { name, number, id } }) => {
@@ -15,7 +16,7 @@ export const ContactItem = ({ contact: { name, number, id } }) => {
           className={style.form_btn_del}
           onClick={handleDelete}
         >
-          X
+         <MdClose style={{width: '15px', color: 'red'}}/>
         </button>
         {name} : {number}
       </p>
